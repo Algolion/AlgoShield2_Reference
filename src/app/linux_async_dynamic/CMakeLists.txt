@@ -4,6 +4,7 @@ set(APP_TARGET           "linux_async_dynamic")
 set(ALLOCATION_TYPE     "dynamic")
 set(ASYNC_TYPE          "linux")
 set(HAL_TYPE            "pc/linux")
+set(REAL_NUMBER_MATH    "floating_point")
 
 #set toolchain
 set(TOOLCHAIN           "gcc" CACHE STRING "Toolchain for build" FORCE)
@@ -24,6 +25,7 @@ target_include_directories(${APP_TARGET}
         ${ASYNC_DIR}
         ${HAL_DIR}
         ${API_DIR}
+        ${TEST_DIR}/${REAL_NUMBER_MATH}
 )
 
 target_link_libraries(${APP_TARGET} ${ALGOSHIELD_LIBRARY})
