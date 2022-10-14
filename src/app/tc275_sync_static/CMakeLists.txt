@@ -1,10 +1,13 @@
 
 set(APP_TARGET           "tc275_sync_static")
 
-set(ALLOCATION_TYPE "static")
-set(HAL_TYPE "infineon/tc275")
-set(REAL_NUMBER_MATH "fixed_point")
-set(COMPILER "tasking")
+set(ALLOCATION_TYPE     "static")
+set(HAL_TYPE            "infineon/tc275")
+set(REAL_NUMBER_MATH    "fixed_point")
+set(COMPILER            "tasking")
+
+#set toolchain
+set(TOOLCHAIN           "gcc" CACHE STRING "Toolchain for build" FORCE)
 
 add_executable(${APP_TARGET})
 

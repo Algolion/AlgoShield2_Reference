@@ -3,6 +3,7 @@
 #include "hal.h"
 #include "test_data.h"
 
+static uint64_t tp_id;
 static int32_t cell_ea[TEST_MAX_CELLS];
 static int32_t cell_hc[TEST_MAX_CELLS];
 static int32_t cell_hcs[TEST_MAX_CELLS];
@@ -13,14 +14,17 @@ static algo_api_sor_t cell_sor_hcs[TEST_MAX_CELLS];
 
 algo_status_t algo_api_tp_detected_cb(algo_api_tp_info_t *tp_info) {
   // Receive
-  for (uint32_t cell_count; cell_count < TEST_MAX_CELLS; cell_count++) {
-    cell_ea[cell_count] = tp_info->ea[cell_count];
-    cell_hc[cell_count] = tp_info->hc[cell_count];
-    cell_hcs[cell_count] = tp_info->hcs[cell_count];
-    cell_sor[cell_count] = tp_info->sor[cell_count];
-    cell_sor_ea[cell_count] = tp_info->sor_ea[cell_count];
-    cell_sor_hc[cell_count] = tp_info->sor_hc[cell_count];
-    cell_sor_hcs[cell_count] = tp_info->sor_hcs[cell_count];
+  if (tp_id != tp_info.id) {
+    for (uint32_t cell_count; cell_count < TEST_MAX_CELLS; cell_count++) {
+      cell_ea[cell_count] = tp_info->ea[cell_count];
+      cell_hc[cell_count] = tp_info->hc[cell_count];
+      cell_hcs[cell_count] = tp_info->hcs[cell_count];
+      cell_sor[cell_count] = tp_info->sor[cell_count];
+      cell_sor_ea[cell_count] = tp_info->sor_ea[cell_count];
+      cell_sor_hc[cell_count] = tp_info->sor_hc[cell_count];
+      cell_sor_hcs[cell_count] = tp_info->sor_hcs[cell_count];
+    }
+    tp_id = tp_info.id;
   }
 }
 
@@ -41,17 +45,16 @@ int integration_init() {
 
 int main(int argc, char *argv[]) {
   algo_status_t status = STATUS_SUCCESS;
-  uint64_t tp_id = 0;
   // Init integration
-  if (0 != integration_init(true)) {
+  if (0 != integration_init()) {
     return -1;
   }
   // Init library
-  status = algo_api_initialize();
+  status = algo_api_initialize(true);
   if (status != STATUS_SUCCESS) {
     return -1;
   }
-  // Register callback for TP detection
+  // Register callback for TP detection - callback option
   algo_api_tp_detected_cb_register(algo_api_tp_detected_cb);
   // Set test data to the library
   for (uint32_t sample_count = 0; sample_count < TEST_MAX_SAMPLES;
@@ -66,7 +69,7 @@ int main(int argc, char *argv[]) {
     if (status != STATUS_SUCCESS) {
       break;
     }
-    // Check if new TP arrived
+    // Check if new TP arrived - polling version
     status = algo_api_tp_info_get(&tp_info);
     if (status == STATUS_SUCCESS) {
       if (tp_id != tp_info.id) {
@@ -84,7 +87,7 @@ int main(int argc, char *argv[]) {
       }
     }
   }
-
+  // Close library
   status = algo_api_deinitialize();
   if (status != STATUS_SUCCESS) {
     return -1;
