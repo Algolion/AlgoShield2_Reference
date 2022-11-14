@@ -97,7 +97,7 @@ static algo_status_t async_lock_release(char *name) {
   return STATUS_SUCCESS;
 }
 
-int hal_init() {
+int async_init() {
   algo_status_t status = STATUS_SUCCESS;
   status = algo_async_thread_register(async_thread_create, async_thread_delete);
   if (status != STATUS_SUCCESS) {

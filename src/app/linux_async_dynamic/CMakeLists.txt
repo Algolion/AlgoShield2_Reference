@@ -28,4 +28,10 @@ target_include_directories(${APP_TARGET}
         ${TEST_DIR}/${REAL_NUMBER_MATH}
 )
 
+set(CMAKE_C_FLAGS -pthread)
+
+find_library(LIBRT rt)
+if(LIBRT)
+target_link_libraries(${APP_TARGET} ${LIBRT})
+endif()
 target_link_libraries(${APP_TARGET} ${ALGOSHIELD_LIBRARY})

@@ -3,16 +3,16 @@
 
 #define MAX_BUFFER_SIZE (10000)
 
-static uint8_t buffer[MAX_BUFFER_SIZE];
+static u8_t buffer[MAX_BUFFER_SIZE];
 
-static void *mem_copy(void *destination, void *source, uint32_t size) {
+static void *mem_copy(void *destination, void *source, u32_t size) {
   for (unsigned int i = 0; i < size; i++) {
     ((char *)destination)[i] = ((char *)source)[i];
   }
   return destination;
 }
 
-static void *mem_set(void *ptr, uint8_t value, uint32_t num) {
+static void *mem_set(void *ptr, u8_t value, u32_t num) {
   unsigned char *w_ptr = (unsigned char *)ptr;
   while (num > 0) {
     *w_ptr = (unsigned char)value;

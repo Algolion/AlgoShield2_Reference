@@ -14,7 +14,7 @@ static algo_api_sor_t cell_sor_hcs[TEST_MAX_CELLS];
 
 algo_status_t algo_api_tp_detected_cb(algo_api_tp_info_t *tp_info) {
   // Receive
-  if (tp_id != tp_info.id) {
+  if (tp_id != tp_info->id) {
     for (uint32_t cell_count; cell_count < TEST_MAX_CELLS; cell_count++) {
       cell_ea[cell_count] = tp_info->ea[cell_count];
       cell_hc[cell_count] = tp_info->hc[cell_count];
@@ -24,7 +24,7 @@ algo_status_t algo_api_tp_detected_cb(algo_api_tp_info_t *tp_info) {
       cell_sor_hc[cell_count] = tp_info->sor_hc[cell_count];
       cell_sor_hcs[cell_count] = tp_info->sor_hcs[cell_count];
     }
-    tp_id = tp_info.id;
+    tp_id = tp_info->id;
   }
 }
 
@@ -32,13 +32,13 @@ int integration_init() {
   int status = 0;
   // Init allocator
   status = alloc_init();
-  if (int_status != 0) {
-    return -1
+  if (status != 0) {
+    return -1;
   }
   // Init HAL
   status = hal_init();
-  if (int_status != 0) {
-    return -1
+  if (status != 0) {
+    return -1;
   }
   return 0;
 }

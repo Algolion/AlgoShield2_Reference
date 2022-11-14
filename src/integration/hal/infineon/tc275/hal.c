@@ -3,11 +3,11 @@
 
 #define FLASH_ADDR (0x70101F80)
 
-static void flash_erase(uint32_t address, uint8_t num_of_sectors) {
-  volatile uint32_t *addr1 = (volatile uint32_t *)(0xaf000000 | 0xaa50);
-  volatile uint32_t *addr2 = (volatile uint32_t *)(0xaf000000 | 0xaa58);
-  volatile uint32_t *addr3 = (volatile uint32_t *)(0xaf000000 | 0xaaa8);
-  volatile uint32_t *addr4 = (volatile uint32_t *)(0xaf000000 | 0xaaa8);
+static void flash_erase(u32_t address, u8_t num_of_sectors) {
+  volatile u32_t *addr1 = (volatile u32_t *)(0xaf000000 | 0xaa50);
+  volatile u32_t *addr2 = (volatile u32_t *)(0xaf000000 | 0xaa58);
+  volatile u32_t *addr3 = (volatile u32_t *)(0xaf000000 | 0xaaa8);
+  volatile u32_t *addr4 = (volatile u32_t *)(0xaf000000 | 0xaaa8);
 
   *addr1 = address;
   *addr2 = num_of_sectors;
@@ -16,26 +16,26 @@ static void flash_erase(uint32_t address, uint8_t num_of_sectors) {
 }
 
 static void flash_wait() {
-  volatile uint32_t *addr1 = (volatile uint32_t *)(0xF8002010);
+  volatile u32_t *addr1 = (volatile u32_t *)(0xF8002010);
 
   while (*addr1 & (1 << 1)) {
   }
 }
 
-static void flash_load(uint32_t *buffer, uint32_t words) {
-  volatile uint32_t *addr1 = (volatile uint32_t *)(0xaf000000 | 0x55f0);
+static void flash_load(u32_t *buffer, u32_t words) {
+  volatile u32_t *addr1 = (volatile u32_t *)(0xaf000000 | 0x55f0);
 
-  for (uint32_t i = 0; i < words; i++) {
+  for (u32_t i = 0; i < words; i++) {
     *addr1 = buffer[i];
     addr1++;
   }
 }
 
-static void flash_write(uint32_t address) {
-  volatile uint32_t *addr1 = (volatile uint32_t *)(0xaf000000 | 0xaa50);
-  volatile uint32_t *addr2 = (volatile uint32_t *)(0xaf000000 | 0xaa58);
-  volatile uint32_t *addr3 = (volatile uint32_t *)(0xaf000000 | 0xaaa8);
-  volatile uint32_t *addr4 = (volatile uint32_t *)(0xaf000000 | 0xaaa8);
+static void flash_write(u32_t address) {
+  volatile u32_t *addr1 = (volatile u32_t *)(0xaf000000 | 0xaa50);
+  volatile u32_t *addr2 = (volatile u32_t *)(0xaf000000 | 0xaa58);
+  volatile u32_t *addr3 = (volatile u32_t *)(0xaf000000 | 0xaaa8);
+  volatile u32_t *addr4 = (volatile u32_t *)(0xaf000000 | 0xaaa8);
 
   *addr1 = address;
   *addr2 = 0x00;
@@ -44,33 +44,33 @@ static void flash_write(uint32_t address) {
 }
 
 static void flash_page_mode() {
-  volatile uint32_t *addr1 = (volatile uint32_t *)(0xaf000000 | 0x5554);
+  volatile u32_t *addr1 = (volatile u32_t *)(0xaf000000 | 0x5554);
   *addr1 = 0x5D;
 }
 
-static algo_status_t hal_persistent_read(void *buffer, uint32_t size) {
-  memcpy(buffer, (uint32_t *)FLASH_ADDR, size);
+static algo_status_t hal_persistent_read(void *buffer, u32_t size) {
+  memcpy(buffer, (u32_t *)FLASH_ADDR, size);
   return STATUS_SUCCESS;
 }
 
-static algo_status_t hal_persistent_write(void *buffer, uint32_t size) {
+static algo_status_t hal_persistent_write(void *buffer, u32_t size) {
   flash_erase(FLASH_ADDR, 1);
   flash_wait();
 
   flash_page_mode();
   flash_wait();
 
-  flash_load((uint32_t *)buffer, size / sizeof(uint32_t));
+  flash_load((u32_t *)buffer, size / sizeof(u32_t));
   flash_write(FLASH_ADDR);
   flash_wait();
 
   return STATUS_SUCCESS;
 }
 
-static uint32_t hal_time_read() {
-  uint64_t result;
-  uint64_t timer_less = *((uint32_t *)0xF0000010);
-  uint64_t timer_more = *((uint32_t *)0xF000002C);
+static u32_t hal_time_read() {
+  u64_t result;
+  u64_t timer_less = *((u32_t *)0xF0000010);
+  u64_t timer_more = *((u32_t *)0xF000002C);
 
   result = timer_less;
   result |= timer_more << 32;
@@ -78,8 +78,8 @@ static uint32_t hal_time_read() {
   return result / 50000000;
 }
 
-static algo_status_t hal_id_read(void *buffer, uint32_t size) {
-  memcpy(buffer, (uint32_t *)0xAF101000, size);
+static algo_status_t hal_id_read(void *buffer, u32_t size) {
+  memcpy(buffer, (u32_t *)0xAF101000, size);
   return STATUS_SUCCESS;
 }
 
