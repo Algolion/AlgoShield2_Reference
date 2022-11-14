@@ -1,6 +1,8 @@
 #ifndef TEST_DATA_H
 #define TEST_DATA_H
 
+#include <stdint.h>
+
 #define TEST_MAX_CELLS 2
 #define TEST_MAX_SAMPLES 2
 
@@ -10,7 +12,7 @@ typedef struct _test_data_t {
   uint16_t voltage_arr_len;
   int32_t current_A;
   int32_t soc;
-  is_valid;
+  bool is_valid;
 } test_data_t;
 
 test_data_t test_data[TEST_MAX_SAMPLES] = {

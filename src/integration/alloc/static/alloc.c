@@ -29,7 +29,7 @@ int alloc_init() {
   if (status != STATUS_SUCCESS) {
     return -1;
   }
-  status = algo_mem_manage_register(NULL, NULL, mem_copy, memset);
+  status = algo_mem_manage_register(NULL, NULL, mem_copy, mem_set);
   if (status != STATUS_SUCCESS) {
     return -1;
   }

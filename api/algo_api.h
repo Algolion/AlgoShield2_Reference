@@ -84,7 +84,7 @@ algo_status_t algo_api_error_callback_register(algo_api_callback_error_t cb);
 algo_status_t algo_api_sor_callback_register(algo_api_callback_sor_t cb);
 
 bool algo_api_initialized(void);
-algo_status_t algo_api_initialize(void);
+algo_status_t algo_api_initialize(bool is_async);
 algo_status_t algo_api_deinitialize(void);
 algo_status_t algo_api_module_status_get(u8_t *module_status);
 

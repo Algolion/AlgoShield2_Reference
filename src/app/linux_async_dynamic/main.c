@@ -1,5 +1,6 @@
 #include "alloc.h"
 #include "api.h"
+#include "async.h"
 #include "hal.h"
 #include "test_data.h"
 #include <pthread.h>
@@ -14,12 +15,12 @@ static algo_api_sor_t cell_sor_ea[TEST_MAX_CELLS];
 static algo_api_sor_t cell_sor_hc[TEST_MAX_CELLS];
 static algo_api_sor_t cell_sor_hcs[TEST_MAX_CELLS];
 
-void *sender(void *ptr) {
+void *sender_thread(void *ptr) {
   // Set test data to the library
   for (uint32_t sample_count = 0; sample_count < TEST_MAX_SAMPLES;
        sample_count++) {
     // Set next sample
-    status = algo_api_sample(
+    algo_status_t status = algo_api_sample(
         test_data[sample_count].time, test_data[sample_count].voltage_arr_mV,
         test_data[sample_count].voltage_arr_len,
         test_data[sample_count].current_A, test_data[sample_count].soc,
@@ -30,10 +31,10 @@ void *sender(void *ptr) {
   }
 }
 
-void *receiver(void *ptr) {
+void *receiver_thread(void *ptr) {
   algo_api_tp_info_t tp_info = {0};
   // Wait for new TP arrived
-  status = algo_api_tp_info_get(&tp_info);
+  algo_status_t status = algo_api_tp_info_get(&tp_info);
   if (status == STATUS_SUCCESS) {
     if (tp_id != tp_info.id) {
       // Get info
@@ -55,18 +56,18 @@ int integration_init() {
   int status = 0;
   // Init allocator
   status = alloc_init();
-  if (int_status != 0) {
-    return -1
+  if (status != 0) {
+    return -1;
   }
   // Init async
   status = async_init();
-  if (int_status != 0) {
-    return -1
+  if (status != 0) {
+    return -1;
   }
   // Init HAL
   status = hal_init();
-  if (int_status != 0) {
-    return -1
+  if (status != 0) {
+    return -1;
   }
   return 0;
 }

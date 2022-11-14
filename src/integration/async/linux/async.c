@@ -6,12 +6,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#define QUEUE_PERMISSIONS 0660
+
 static pthread_t thread;
 static pthread_mutex_t mutex;
 static mqd_t queue;
 
-static algo_status_t async_thread_create(char *name, uint32_t stack_size,
-                                         thread_entry entry) {
+static algo_status_t async_thread_create(char *name, u32_t stack_size,
+                                         thread_entry_t entry) {
   int status = 0;
   char *unused = name;
   status = pthread_create(&thread, NULL, entry, NULL);
@@ -24,8 +26,8 @@ static algo_status_t async_thread_delete(char *name) {
   return STATUS_SUCCESS;
 }
 
-static algo_status_t async_queue_create(char *name, uint32_t msg_size,
-                                        uint32_t msg_count) {
+static algo_status_t async_queue_create(char *name, u32_t msg_size,
+                                        u32_t msg_count) {
   struct mq_attr attr;
 
   attr.mq_flags = 0;
@@ -34,7 +36,7 @@ static algo_status_t async_queue_create(char *name, uint32_t msg_size,
   attr.mq_curmsgs = 0;
 
   queue = mq_open(name, O_RDONLY | O_CREAT, QUEUE_PERMISSIONS, &attr);
-  if (status != 0) {
+  if (queue != 0) {
     return STATUS_NOT_AVAILABLE;
   }
   return STATUS_SUCCESS;
@@ -49,8 +51,7 @@ static algo_status_t async_queue_delete(char *name) {
   return STATUS_SUCCESS;
 }
 
-static algo_status_t async_queue_push(char *name, void *msg,
-                                      uint32_t msg_size) {
+static algo_status_t async_queue_push(char *name, void *msg, u32_t msg_size) {
   int status = 0;
   status = mq_send(queue, msg, msg_size, NULL);
   if (status != 0) {
@@ -59,8 +60,7 @@ static algo_status_t async_queue_push(char *name, void *msg,
   return STATUS_SUCCESS;
 }
 
-static algo_status_t async_queue_pull(char *name, void *msg,
-                                      uint32_t msg_size) {
+static algo_status_t async_queue_pull(char *name, void *msg, u32_t msg_size) {
   int status = 0;
   status = mq_receive(queue, msg, msg_size, NULL);
   if (status != 0) {

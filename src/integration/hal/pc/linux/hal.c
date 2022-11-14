@@ -1,38 +1,19 @@
 #include "hal.h"
 #include "api.h"
 
-static algo_status_t hal_persistent_read(void *buffer, uint32_t size) {
-  memcpy(buffer, (uint32_t *)FLASH_ADDR, size);
-  return STATUS_SUCCESS;
-}
-
-static algo_status_t hal_persistent_write(void *buffer, uint32_t size) {
-  flash_erase(FLASH_ADDR, 1);
-  flash_wait();
-
-  flash_page_mode();
-  flash_wait();
-
-  flash_load((uint32_t *)buffer, size / sizeof(uint32_t));
-  flash_write(FLASH_ADDR);
-  flash_wait();
+static algo_status_t hal_persistent_read(void *buffer, u32_t size) {
 
   return STATUS_SUCCESS;
 }
 
-static uint32_t hal_time_read() {
-  uint64_t result;
-  uint64_t timer_less = *((uint32_t *)0xF0000010);
-  uint64_t timer_more = *((uint32_t *)0xF000002C);
+static algo_status_t hal_persistent_write(void *buffer, u32_t size) {
 
-  result = timer_less;
-  result |= timer_more << 32;
-
-  return result / 50000000;
+  return STATUS_SUCCESS;
 }
 
-static algo_status_t hal_id_read(void *buffer, uint32_t size) {
-  memcpy(buffer, (uint32_t *)0xAF101000, size);
+static u32_t hal_time_read() { return 0; }
+
+static algo_status_t hal_id_read(void *buffer, u32_t size) {
   return STATUS_SUCCESS;
 }
 
