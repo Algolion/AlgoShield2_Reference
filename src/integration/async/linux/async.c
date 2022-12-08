@@ -1,5 +1,6 @@
 #include "async.h"
-#include "api.h"
+#include "algo_api.h"
+#include "algo_integ_api.h"
 #include <mqueue.h>
 #include <pthread.h>
 #include <stdint.h>
@@ -15,14 +16,18 @@ static mqd_t queue;
 static algo_status_t async_thread_create(char *name, u32_t stack_size,
                                          thread_entry_t entry) {
   int status = 0;
-  char *unused = name;
+  (void)name;
+  (void)stack_size;
   status = pthread_create(&thread, NULL, entry, NULL);
+  if (status != 0) {
+    return STATUS_NOT_AVAILABLE;
+  }
   return STATUS_SUCCESS;
 }
 
 static algo_status_t async_thread_delete(char *name) {
-  char *unused = name;
-  pthread_exit(thread);
+  (void)name;
+  pthread_exit(&thread);
   return STATUS_SUCCESS;
 }
 
@@ -43,6 +48,7 @@ static algo_status_t async_queue_create(char *name, u32_t msg_size,
 }
 
 static algo_status_t async_queue_delete(char *name) {
+  (void)name;
   int status = 0;
   status = mq_close(queue);
   if (status != 0) {
@@ -52,8 +58,9 @@ static algo_status_t async_queue_delete(char *name) {
 }
 
 static algo_status_t async_queue_push(char *name, void *msg, u32_t msg_size) {
+  (void)name;
   int status = 0;
-  status = mq_send(queue, msg, msg_size, NULL);
+  status = mq_send(queue, msg, msg_size, 0);
   if (status != 0) {
     return STATUS_NOT_AVAILABLE;
   }
@@ -61,8 +68,9 @@ static algo_status_t async_queue_push(char *name, void *msg, u32_t msg_size) {
 }
 
 static algo_status_t async_queue_pull(char *name, void *msg, u32_t msg_size) {
+  (void)name;
   int status = 0;
-  status = mq_receive(queue, msg, msg_size, NULL);
+  status = mq_receive(queue, msg, msg_size, 0);
   if (status != 0) {
     return STATUS_NOT_AVAILABLE;
   }
@@ -71,7 +79,7 @@ static algo_status_t async_queue_pull(char *name, void *msg, u32_t msg_size) {
 
 static algo_status_t async_lock_create(char *name) {
   int status = 0;
-  char *unused = name;
+  (void)name;
   status = pthread_mutex_init(&mutex, NULL);
   if (status != 0) {
     return STATUS_NOT_AVAILABLE;
@@ -80,19 +88,19 @@ static algo_status_t async_lock_create(char *name) {
 }
 
 static algo_status_t async_lock_delete(char *name) {
-  char *unused = name;
+  (void)name;
   pthread_mutex_destroy(&mutex);
   return STATUS_SUCCESS;
 }
 
 static algo_status_t async_lock_obtain(char *name) {
-  char *unused = name;
+  (void)name;
   pthread_mutex_unlock(&mutex);
   return STATUS_SUCCESS;
 }
 
 static algo_status_t async_lock_release(char *name) {
-  char *unused = name;
+  (void)name;
   pthread_mutex_unlock(&mutex);
   return STATUS_SUCCESS;
 }

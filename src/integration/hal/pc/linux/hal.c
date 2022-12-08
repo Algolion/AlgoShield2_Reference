@@ -1,19 +1,24 @@
 #include "hal.h"
-#include "api.h"
+#include "algo_api.h"
+#include "algo_integ_api.h"
 
 static algo_status_t hal_persistent_read(void *buffer, u32_t size) {
-
+  (void)buffer;
+  (void)size;
   return STATUS_SUCCESS;
 }
 
 static algo_status_t hal_persistent_write(void *buffer, u32_t size) {
-
+  (void)buffer;
+  (void)size;
   return STATUS_SUCCESS;
 }
 
 static u32_t hal_time_read() { return 0; }
 
 static algo_status_t hal_id_read(void *buffer, u32_t size) {
+  (void)buffer;
+  (void)size;
   return STATUS_SUCCESS;
 }
 

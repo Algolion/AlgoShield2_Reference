@@ -1,5 +1,6 @@
 #include "alloc.h"
-#include "api.h"
+#include "algo_api.h"
+#include "algo_integ_api.h"
 
 #define MAX_BUFFER_SIZE (10000)
 
